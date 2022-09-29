@@ -5,8 +5,9 @@
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "prebuild": "expo prebuild",
-    "web": "expo start --web"
+    "prebuild": "expo prebuild --clean",
+    "web": "expo start --web",
+    "export": "expo export --experimental-bundle"
   },
   "dependencies": {
     "expo": "~46.0.13",

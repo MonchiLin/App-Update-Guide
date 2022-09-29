@@ -1,11 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import Lottie from "lottie-react-native";
+import React, { useRef } from "react";
 
 export default function App() {
+  const ref = useRef<Lottie>();
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Lottie
+        ref={ref}
+        loop
+        autoPlay
+        source={require('./assets/109272-lolo-new-branding.json')}
+      />
+      <StatusBar style="auto"/>
     </View>
   );
 }

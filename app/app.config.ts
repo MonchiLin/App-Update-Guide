@@ -47,6 +47,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     updates: {
       fallbackToCacheTimeout: 0,
+      checkAutomatically: "ON_ERROR_RECOVERY",
       // If the target is android, the URL should be 10.0.2.2
       // ref: https://stackoverflow.com/questions/5528850/how-do-you-connect-localhost-in-the-android-emulator
       url: configs.updateURL,
