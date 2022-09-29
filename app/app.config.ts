@@ -26,10 +26,16 @@ function getBuildNumber(version: string, patchIncrease: number = 0) {
 export const buildNumber = getBuildNumber(version, patch);
 export const versionObject = getVersionObject(version, patch);
 
+const configs = {
+  updateURL: "http://localhost:3000/api/manifest",
+  packageName: "com.kiki.example.update",
+  runtimeVersion: "app" + "-" + versionObject.major + "-" + versionObject.minor
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
-    name: "app",
-    slug: "app",
+    name: "UpdateApp",
+    slug: "update-app",
     version: version,
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -43,22 +49,23 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       fallbackToCacheTimeout: 0,
       // If the target is android, the URL should be 10.0.2.2
       // ref: https://stackoverflow.com/questions/5528850/how-do-you-connect-localhost-in-the-android-emulator
-      url: "http://localhost:3000/api/manifest"
+      url: configs.updateURL,
     },
     // It will be app-1-1 or app-1-2 or app-2-0 etc..
-    runtimeVersion: "app" + "-" + versionObject.major + "-" + versionObject.minor,
+    runtimeVersion: configs.runtimeVersion,
     assetBundlePatterns: [
       "**/*"
     ],
     ios: {
-      bundleIdentifier: "com.kiki.example.update",
+      bundleIdentifier: configs.packageName,
       buildNumber: buildNumber.toString(),
       supportsTablet: true
     },
     android: {
+      package: configs.packageName,
       versionCode: buildNumber,
       adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
+        foregroundImage: "./assets/ic_launcher_foreground.png",
         backgroundColor: "#FFFFFF"
       }
     },
