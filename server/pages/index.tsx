@@ -34,7 +34,12 @@ const Home: NextPage = () => {
     return fetch(`/api/updates/${update.platform}/${update.hostingVersion}`, {
       method: "GET",
     })
-      .then(res => res.json());
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return Promise.reject(res.statusText);
+      });
   };
 
   const handleDelete = (update: Partial<Update>) => {

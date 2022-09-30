@@ -1,8 +1,9 @@
 import {
+  Box,
   Button,
   FormControl,
-  FormErrorMessage,
-  FormLabel, Input,
+  FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,13 +13,15 @@ import {
   ModalOverlay,
   PinInput,
   PinInputField,
-  Select, useToast
+  Select,
+  Tag
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Update } from "@prisma/client";
+import { UpdateController } from "../lib/update-controller";
 
 type Props = {
-  handleGet: (update: Pick<Update, "platform" | "hostingVersion">) => Promise<void>
+  handleGet: (update: Pick<Update, "platform" | "hostingVersion">) => Promise<Update>
 }
 
 export const UpdateGet = (props: Props) => {
@@ -29,8 +32,7 @@ export const UpdateGet = (props: Props) => {
     version: "1.0.0",
     patch: "1",
   });
-
-  const toast = useToast();
+  const [updateInfo, setUpdateInfo] = useState<Update | null>(null);
 
   const handleCreateGet = () => {
     props
@@ -39,8 +41,16 @@ export const UpdateGet = (props: Props) => {
         hostingVersion,
       })
       .then(res => {
+        setUpdateInfo(res);
       });
   };
+
+  const canHotUpdate = useMemo(() => {
+    if (!updateInfo) {
+      return false;
+    }
+    return UpdateController.ShouldHotUpdate(localVersion.version, updateInfo.hotUpdateVersion);
+  }, [updateInfo, localVersion]);
 
   return <>
     <Button
@@ -82,6 +92,36 @@ export const UpdateGet = (props: Props) => {
               <PinInputField/>
               <PinInputField/>
             </PinInput>
+          </FormControl>
+
+          <FormControl mt={4}>
+            <FormLabel>本地基座版本</FormLabel>
+            <PinInput
+              value={localVersion.version}
+              onChange={e => setLocalVersion(state => ({ ...state, version: e }))}
+            >
+              <PinInputField/>
+              <PinInputField/>
+              <PinInputField/>
+              <PinInputField/>
+              <PinInputField/>
+            </PinInput>
+          </FormControl>
+
+          <FormControl mt={4}>
+            <FormLabel>本地修订版本</FormLabel>
+            <Input
+              value={localVersion.patch}
+              onChange={e => setLocalVersion(state => ({ ...state, patch: e.target.value }))}
+            />
+          </FormControl>
+
+          <FormControl mt={4}>
+            <FormLabel>Result</FormLabel>
+            <Box>
+              <Tag>Sample Tag</Tag>
+              <Tag>Sample Tag</Tag>
+            </Box>
           </FormControl>
 
         </ModalBody>

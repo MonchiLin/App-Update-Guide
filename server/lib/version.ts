@@ -4,34 +4,27 @@ export class Version {
   patch!: number;
   buildNumber!: number;
 
-  constructor(version: string, separator = "+") {
-    try {
-      const [v, b] = version.split(separator);
-      let [majorStr, minorStr, patchStr] = v.split(".");
-      const major = Number(majorStr);
-      const minor = Number(minorStr);
-      const patch = Number(patchStr);
-      const buildNumber = b ? Number(b) : Version.GetBuilderNumber(version);
-
-      this.major = major;
-      this.minor = minor;
-      this.patch = patch;
-      this.buildNumber = buildNumber;
-    } catch (e) {
-
-    }
+  constructor(version: string, buildNumber: number = 0) {
+    const [majorStr, minorStr, patchStr] = version.split(".");
+    const major = Number(majorStr);
+    const minor = Number(minorStr);
+    const patch = Number(patchStr);
+    this.major = major;
+    this.minor = minor;
+    this.patch = patch;
+    this.buildNumber = buildNumber;
   }
 
-  static GetBuilderNumber(version: string, patchIncrease = 0) {
+  static GetVersionCode(version: string, buildNumber = 0) {
     let [majorStr, minorStr, patchStr] = version.split(".");
     const major = Number(majorStr);
     const minor = Number(minorStr);
     const patch = Number(patchStr);
 
-    return (major * 1000000) + (minor * 10000) + (patch * 100 + patchIncrease);
+    return (major * 1000000) + (minor * 10000) + (patch * 100 + buildNumber);
   }
 
-  static FromBuilderNumber(buildNumber: number) {
+  static FromVersionCode(buildNumber: number) {
     const major = Number.parseInt((buildNumber / 1000000).toString());
     const minor = Number.parseInt(((buildNumber - major * 1000000) / 10000).toString());
     const patch = Number.parseInt(((buildNumber - major * 1000000 - minor * 10000)).toString());

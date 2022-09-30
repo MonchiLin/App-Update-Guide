@@ -17,5 +17,9 @@ export default async function handler(
     }
   });
 
-  res.status(200).json(data);
+  if (data) {
+    res.status(200).json(data);
+  } else {
+    res.status(404).end();
+  }
 }
