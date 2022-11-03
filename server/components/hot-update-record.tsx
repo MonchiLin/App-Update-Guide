@@ -16,17 +16,17 @@ import {
   Tr,
   useToast,
 } from '@chakra-ui/react';
-import { Update } from "@prisma/client";
+import { HotUpdate } from "@prisma/client";
 
 type Props = {
-  updates: Update[],
-  handleDelete: (update: Update) => Promise<void>
+  updates: HotUpdate[],
+  handleDelete: (update: HotUpdate) => Promise<void>
 }
 
-export const UpdateRecord = (props: Props) => {
+export const HotUpdateRecord = (props: Props) => {
   const toast = useToast();
 
-  const handleDelete = (update: Update) => {
+  const handleDelete = (update: HotUpdate) => {
     props.handleDelete(update)
       .then(res => {
         toast({
@@ -45,12 +45,8 @@ export const UpdateRecord = (props: Props) => {
         <Tr>
           <Th>Id</Th>
           <Th>平台</Th>
-          <Th>最新版本</Th>
           <Th>基座版本</Th>
-          <Th>基座最新版本</Th>
-          <Th>更新时间</Th>
-          <Th>更新内容</Th>
-          <Th>下载链接</Th>
+          <Th>热更新版本</Th>
           <Th></Th>
         </Tr>
       </Thead>
@@ -60,12 +56,8 @@ export const UpdateRecord = (props: Props) => {
             return <Tr key={update.id}>
               <Td>{update.id}</Td>
               <Td>{update.platform}</Td>
-              <Td>{update.latestVersion}</Td>
               <Td>{update.hostingVersion}</Td>
               <Td>{update.hotUpdateVersion}</Td>
-              <Td>{update.updatedAt.toString()}</Td>
-              <Td>{update.content}</Td>
-              <Td>{update.distributionLink}</Td>
               <Td>
                 <Popover>
                   <PopoverTrigger>

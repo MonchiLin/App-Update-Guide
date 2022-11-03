@@ -10,21 +10,23 @@ datasource db {
   url      = "file:dev.db"
 }
 
-model Update {
+model HotUpdate {
   /// 自增 id
   id               Int        @id @default(autoincrement())
   /// 平台
   platform         String
-  /// 下载链接
-  distributionLink String?    @map("distribution_link")
   /// 基座版本 1.1.0 or 2.2.0
   hostingVersion   String     @map("hosting_version")
-  /// 最新版本号 1.0.0+1000000 or 1.1.0+1000020
-  latestVersion    String     @map("latest_version")
   // 当前基座可热更新到的最新版本号 1.1.0+1000040
   hotUpdateVersion String     @map("hot_update_version")
-  /// 更新时间
-  updatedAt        DateTime   @updatedAt() @map("updated_at")
-  /// 更新内容
-  content          String?
+}
+
+// 最新版本
+model LastestVersion {
+  /// 平台
+  platform         String     @id
+  /// 版本号 1.1.0 or 2.2.0
+  hostingVersion   String     @map("hosting_version")
+  /// 构建版本号 2010000
+  hotUpdateVersion String     @map("hot_update_version")
 }

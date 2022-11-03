@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>EXUpdatesCheckOnLaunch</key>
-    <string>ALWAYS</string>
+    <string>ERROR_RECOVERY_ONLY</string>
     <key>EXUpdatesEnabled</key>
     <true/>
     <key>EXUpdatesLaunchWaitMs</key>
@@ -11,6 +11,6 @@
     <key>EXUpdatesRuntimeVersion</key>
     <string>app-1-0</string>
     <key>EXUpdatesURL</key>
-    <string>http://localhost:3000/api/manifest</string>
+    <string>http://192.168.31.35:3000/api/manifest</string>
   </dict>
 </plist>

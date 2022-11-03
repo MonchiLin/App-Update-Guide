@@ -1,8 +1,8 @@
 import {
   Button,
   FormControl,
-  FormErrorMessage,
-  FormLabel, Input,
+  FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,35 +12,40 @@ import {
   ModalOverlay,
   PinInput,
   PinInputField,
-  Select, useToast
+  Select,
+  useToast
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { Update } from "@prisma/client";
+import { useEffect, useState } from "react";
+import { HotUpdate, LastestVersion } from "@prisma/client";
+import { Version } from "../lib/version";
 
 type Props = {
-  handleCreateUpdate: (update: Partial<Update>) => Promise<void>
+  handleCreateUpdate: (update: Partial<HotUpdate>) => Promise<void>
+  latestVersion: {
+    android: LastestVersion | null
+    ios: LastestVersion | null
+  } | null
 }
 
-export const UpdateCreate = (props: Props) => {
+export const HotUpdateCreate = (props: Props) => {
   const [visible, setVisible] = useState(false);
   const [platform, setPlatform] = useState("Android");
   const [hostingVersion, setHostingVersion] = useState("1.0.0");
-  const [latestVersion, setLatestVersion] = useState("1.0.0+1000000");
-  const [hotUpdateVersion, setHotUpdateVersion] = useState("1.0.0+1000000");
-  const formState = useState({});
+  const [hotUpdateVersion, setHotUpdateVersion] = useState("1000000");
   const toast = useToast();
 
-  const validate = () => {
-
-  };
-
+  useEffect(() => {
+    if (hostingVersion) {
+      const buildNumber = Version.GetHotUpdateVersion(hostingVersion);
+      setHotUpdateVersion(buildNumber.toString());
+    }
+  }, [hostingVersion]);
 
   const handleCreateUpdate = () => {
     props
       .handleCreateUpdate({
         platform,
         hostingVersion,
-        latestVersion,
         hotUpdateVersion,
       })
       .then(res => {
@@ -61,7 +66,7 @@ export const UpdateCreate = (props: Props) => {
       type="submit"
       onClick={() => setVisible(true)}
     >
-      新增
+      创建热更新
     </Button>
 
     <Modal
@@ -98,12 +103,7 @@ export const UpdateCreate = (props: Props) => {
           </FormControl>
 
           <FormControl mt={4}>
-            <FormLabel>最新版本</FormLabel>
-            <Input value={latestVersion} onChange={e => setLatestVersion(e.target.value)}/>
-          </FormControl>
-
-          <FormControl mt={4}>
-            <FormLabel>基座最新版本</FormLabel>
+            <FormLabel>热更新版本</FormLabel>
             <Input value={hotUpdateVersion} onChange={e => setHotUpdateVersion(e.target.value)}/>
           </FormControl>
 

@@ -1,7 +1,8 @@
 import { ConfigContext, ExpoConfig } from '@expo/config';
-import { version, patch } from './version.json'
+import { version, hotfixes } from './version.json'
+import { hotUpdateUrl } from './api-config.json'
 
-function getVersionObject(version: string, patchIncrease: number = 0) {
+function getVersionObject(version: string, hotfixes: number = 0) {
   let [majorStr, minorStr, patchStr] = version.split(".");
   const major = Number(majorStr);
   const minor = Number(minorStr);
@@ -10,24 +11,24 @@ function getVersionObject(version: string, patchIncrease: number = 0) {
   return {
     major,
     minor,
-    patch: patch + patchIncrease,
+    patch: patch + hotfixes,
   }
 }
 
-function getBuildNumber(version: string, patchIncrease: number = 0) {
+function getBuildNumber(version: string, hotfixes: number = 0) {
   let [majorStr, minorStr, patchStr] = version.split(".");
   const major = Number(majorStr);
   const minor = Number(minorStr);
   const patch = Number(patchStr);
 
-  return (major * 1000000) + (minor * 10000) + (patch * 100 + patchIncrease);
+  return (major * 1000000) + (minor * 10000) + (patch * 100 + hotfixes);
 }
 
-export const buildNumber = getBuildNumber(version, patch);
-export const versionObject = getVersionObject(version, patch);
+export const buildNumber = getBuildNumber(version, hotfixes);
+export const versionObject = getVersionObject(version, hotfixes);
 
 const configs = {
-  updateURL: "http://localhost:3000/api/manifest",
+  updateURL: hotUpdateUrl,
   packageName: "com.kiki.example.update",
   runtimeVersion: "app" + "-" + versionObject.major + "-" + versionObject.minor
 }
@@ -54,6 +55,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     // It will be app-1-1 or app-1-2 or app-2-0 etc..
     runtimeVersion: configs.runtimeVersion,
+    extra: {
+      eas: {
+        projectId: "ba75252e-a172-42f6-a208-5a5d5cf79697"
+      }
+    },
     assetBundlePatterns: [
       "**/*"
     ],

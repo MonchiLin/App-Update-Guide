@@ -1,0 +1,4 @@
+{
+  "hotUpdateUrl": "http://192.168.31.35:3000/api/manifest",
+  "checkUpdateUrl": "http://192.168.31.35:6060"
+}

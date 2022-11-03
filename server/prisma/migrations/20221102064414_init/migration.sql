@@ -9,6 +9,3 @@ CREATE TABLE "Update" (
     "updated_at" DATETIME NOT NULL,
     "content" TEXT
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "Update_hosting_version_key" ON "Update"("hosting_version");

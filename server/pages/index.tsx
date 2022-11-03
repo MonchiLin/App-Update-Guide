@@ -1,27 +1,34 @@
 import type { NextPage } from 'next';
-import { UpdateRecord } from "../components/update-record";
-import { Update } from '@prisma/client';
+import { HotUpdateRecord } from "../components/hot-update-record";
+import { HotUpdate, LastestVersion } from '@prisma/client';
 import { useEffect, useState } from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { UpdateCreate } from "../components/update-create";
-import { UpdateGet } from "../components/update-get";
+import { Box, Flex, Heading, Highlight } from "@chakra-ui/react";
+import { HotUpdateCreate } from "../components/hot-update-create";
+import { UpdateTest } from "../components/update-test";
+import { LatestVersionCreate } from "../components/latest-version-create";
+import { omit } from "@chakra-ui/utils";
 
 const Home: NextPage = () => {
-  const [updates, setUpdates] = useState<Update[]>([]);
+  const [updates, setUpdates] = useState<HotUpdate[]>([]);
+  const [latestVersion, setLatestVersion] = useState<{
+    android: LastestVersion | null
+    ios: LastestVersion | null
+  } | null>(null);
   useEffect(() => {
     getUpdates();
+    getLatestVersion();
   }, []);
 
   const getUpdates = () => {
-    fetch("/api/updates")
+    fetch("/api/hot-update")
       .then(res => res.json())
       .then(res => {
         setUpdates(res);
       });
   };
 
-  const handleCreateUpdate = (update: Partial<Update>) => {
-    return fetch("/api/updates", {
+  const handleCreateUpdate = (update: Partial<HotUpdate>) => {
+    return fetch("/api/hot-update", {
       method: "POST",
       body: JSON.stringify(update),
     }).then(res => res.json())
@@ -30,8 +37,26 @@ const Home: NextPage = () => {
       });
   };
 
-  const handleGet = (update: Pick<Update, "platform" | "hostingVersion">) => {
-    return fetch(`/api/updates/${update.platform}/${update.hostingVersion}`, {
+  const handleCreateLatestVersion = (latestVersion: Partial<LastestVersion>) => {
+    return fetch(`/api/latest-version/${latestVersion.platform}`, {
+      method: "PUT",
+      body: JSON.stringify(omit(latestVersion, ["platform"])),
+    }).then(res => res.json())
+      .then(() => {
+        getLatestVersion();
+      });
+  };
+
+  const getLatestVersion = () => {
+    return fetch("/api/latest-version")
+      .then(res => res.json())
+      .then(res => {
+        setLatestVersion(res);
+      });
+  };
+
+  const handleGetUpdate = (update: Pick<HotUpdate, "platform" | "hostingVersion">) => {
+    return fetch(`/api/hot-update/${update.platform}/${update.hostingVersion}`, {
       method: "GET",
     })
       .then(res => {
@@ -42,8 +67,8 @@ const Home: NextPage = () => {
       });
   };
 
-  const handleDelete = (update: Partial<Update>) => {
-    return fetch(`/api/updates/${update.id}`, {
+  const handleDelete = (update: Partial<HotUpdate>) => {
+    return fetch(`/api/hot-update/${update.id}`, {
       method: "DELETE",
     }).then(res => {
       getUpdates();
@@ -53,19 +78,25 @@ const Home: NextPage = () => {
   return (
     <div>
       <Flex px={4} py={4}>
-        <Box flex="1">
-          <Text></Text>
+        <Box flex="6">
+          <Heading lineHeight="tall">
+            <Highlight
+              query={['最新版本', '热更新']}
+              styles={{ px: '2', py: '1', rounded: 'full', bg: 'red.100' }}
+            >
+              更新最新版本和热更新 然后调试他们
+            </Highlight>
+          </Heading>
         </Box>
-        <Box flex="1">
-          <Text></Text>
-        </Box>
-        <Flex justifyContent={"right"} flex="1">
-          <UpdateCreate handleCreateUpdate={handleCreateUpdate}/>
+        <Flex alignItems={"center"} display={"flex"} justifyContent={"right"} flex="4">
+          <LatestVersionCreate latestVersion={latestVersion} handleCreateLatestVersion={handleCreateLatestVersion}/>
           <Box ml={4}/>
-          <UpdateGet handleGet={handleGet}/>
+          <HotUpdateCreate latestVersion={latestVersion} handleCreateUpdate={handleCreateUpdate}/>
+          <Box ml={4}/>
+          <UpdateTest latestVersion={latestVersion} handleGetUpdate={handleGetUpdate}/>
         </Flex>
       </Flex>
-      <UpdateRecord handleDelete={handleDelete} updates={updates}/>
+      <HotUpdateRecord handleDelete={handleDelete} updates={updates}/>
     </div>
   );
 };

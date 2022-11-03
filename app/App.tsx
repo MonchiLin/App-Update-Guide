@@ -1,29 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
-import Lottie from "lottie-react-native";
-import React, { useRef } from "react";
+import { SafeAreaView, StyleSheet } from 'react-native';
+import React, { useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ToastProvider } from "react-native-toast-notifications";
+import { Home } from "./Home";
+import { hotUpdateUrl } from './api-config.json'
 
-export default function App() {
-  const ref = useRef<Lottie>();
+export default function () {
+  // useEffect(() => {
+  //   fetch(hotUpdateUrl + `?runtime-version=app-1-0&platform=android`)
+  //     .then(res => res.formData())
+  //     .then(res => {
+  //       console.log('请求 res', res)
+  //     })
+  // }, [])
 
-  return (
-    <View style={styles.container}>
-      <Lottie
-        ref={ref}
-        loop
-        autoPlay
-        source={require('./assets/109272-lolo-new-branding.json')}
-      />
+  return <ToastProvider style={{ transform: [{ translateY: 40 }] }} placement={"top"}>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, alignItems: "center", backgroundColor: "#f2f2f2" }}>
+        <Home/>
+      </SafeAreaView>
       <StatusBar style="auto"/>
-    </View>
-  );
+    </SafeAreaProvider>
+  </ToastProvider>;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

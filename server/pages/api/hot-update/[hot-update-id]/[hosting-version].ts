@@ -1,18 +1,17 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from "../../../../lib/prisma";
-import type Prisma from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Prisma.Update | null>
+  res: NextApiResponse
 ) {
-  const platform = req.query["update-id"] as string;
+  const platform = req.query["hot-update-id"] as string;
   const hostingVersion = req.query["hosting-version"] as string;
 
-  const data = await prisma.update.findFirst({
+  const data = await prisma.hotUpdate.findFirst({
     where: {
-      platform,
+      platform: platform.toLowerCase(),
       hostingVersion
     }
   });

@@ -38,7 +38,7 @@ export class UpdateController {
     }
 
     // 如果最新版本的 patch 或者 buildNumber 比当前版本大, 则允许热更新
-    if ((latest.major === current.major) && (latest.minor === latest.minor) && (latest.patch > current.patch || latest.buildNumber > current.buildNumber)) {
+    if ((latest.major === current.major) && (latest.minor === latest.minor) && (latest.patch > current.patch || latest.hotfixes > current.hotfixes)) {
       return true;
     }
 
