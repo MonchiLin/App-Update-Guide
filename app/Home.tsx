@@ -6,6 +6,7 @@ import { useUpdate } from "./lib/use-update";
 import { ThemedButton } from "react-native-really-awesome-button";
 import { useToast } from "react-native-toast-notifications";
 import * as Updates from "expo-updates";
+import * as DevClient from "expo-dev-client";
 
 export function Home() {
   const ref = useRef<Lottie>();
@@ -19,6 +20,9 @@ export function Home() {
   };
   const handleUpdate = () => {
     if (updateState.hasHotUpdate) {
+      if (DevClient.isDevelopmentBuild()) {
+        return Promise.reject("Only support release app");
+      }
       toast.show("检测到热更新, 开始更新...");
       return Updates.checkForUpdateAsync()
         .then(res => {
@@ -32,6 +36,7 @@ export function Home() {
           }
         })
         .catch(err => {
+          console.log("Error is", err);
           toast.show("未检查到更新资源, 检查 app/api-config hotUpdateUrl 是否正确", { type: "danger" });
         });
     }
@@ -42,6 +47,9 @@ export function Home() {
 
     return Promise.reject();
   };
+
+  // 可以更新, 或者可以热更新
+  const canUpdate = updateState.hasHotUpdate || updateState.hasHostingUpdate;
 
   return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
     <View style={styles.container}>
@@ -69,9 +77,9 @@ export function Home() {
       <ThemedButton
         name="bruce"
         type="danger"
-        disabled={!(updateState.hasHotUpdate || updateState.hasHostingUpdate)}
+        disabled={!canUpdate}
         style={{ marginTop: 10 }}
-        onPress={() => handleUpdate()}
+        onPressOut={handleUpdate}
       >
         {updateState.hasHotUpdate ? "Hot Update" : "Update"}
       </ThemedButton>

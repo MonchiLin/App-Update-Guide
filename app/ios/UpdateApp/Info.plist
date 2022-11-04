@@ -28,9 +28,15 @@
           <string>com.kiki.example.update</string>
         </array>
       </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+update-app</string>
+        </array>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>1000000</string>
+    <string>1000010</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
